@@ -23,6 +23,7 @@ echo ""
 echo "Building the elm apps" | arrow
 
 cd $1
+mkdir -p $1/elm-stuff/
 echo "Importing cache from the previous build" | indent
 cp -r $2/* $1/elm-stuff/
 for app in "${apps[@]}"
