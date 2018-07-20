@@ -1,0 +1,36 @@
+#!/bin/bash
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+arrow() {
+  sed -u 's/^/-----> /'
+}
+
+echo "Discovering the elm apps" | arrow
+
+env_var=$(<$3/ELM_APPS)
+IFS=';' read -r -a apps <<< "$env_var"
+echo "Found ${#apps[@]} elm apps:" | indent
+for app in "${apps[@]}"
+do
+    echo "  $( cut -d ' ' -f 1 <<< "$app" )" | indent
+done
+
+echo ""
+
+echo "Building the elm apps" | arrow
+
+cd $1
+echo "Importing cache from the previous build" | indent
+cp -r $2/* $1/elm-stuff/
+for app in "${apps[@]}"
+do
+    command="$( cut -d ' ' -f 2- <<< "$app" )"
+    app="$( cut -d ' ' -f 1 <<< "$app" )"
+    echo "Building the $app app" | indent
+    $command --silent | indent
+done
+echo "Saving the cache for the next build" | indent
+cp -r $1/elm-stuff/* $2/
