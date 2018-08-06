@@ -26,6 +26,8 @@ cd $1
 mkdir -p $1/elm-stuff/
 echo "Importing cache from the previous build" | indent
 cp -r $2/* $1/elm-stuff/
+echo "Installing new dependencies" | indent
+npm run elm-package install --silent | indent
 for app in "${apps[@]}"
 do
     command="$( cut -d ' ' -f 2- <<< "$app" )"
